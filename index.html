@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mine Go Launcher</title>
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+html{
+    scroll-behavior:smooth;
+}
+
+body{
+    font-family:'Inter',Arial,sans-serif;
+    background:#020106;
+    color:#fff;
+    overflow-x:hidden;
+}
+
+/* Purple glow background */
+body::before{
+    content:"";
+    position:fixed;
+    inset:0;
+    pointer-events:none;
+    background:
+        radial-gradient(circle at 15% 20%, rgba(125,0,255,.18), transparent 28%),
+        radial-gradient(circle at 85% 30%, rgba(80,0,255,.16), transparent 30%),
+        radial-gradient(circle at 50% 85%, rgba(155,0,255,.12), transparent 32%);
+    z-index:-2;
+}
+
+body::after{
+    content:"";
+    position:fixed;
+    inset:0;
+    pointer-events:none;
+    background-image:
+        linear-gradient(rgba(255,255,255,.015) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,.015) 1px, transparent 1px);
+    background-size:45px 45px;
+    mask-image:linear-gradient(to bottom, black, transparent 90%);
+    z-index:-1;
+}
+
+/* Header */
+header{
+    height:82px;
+    padding:0 8%;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    border-bottom:1px solid rgba(135,40,255,.35);
+    background:rgba(3,2,10,.82);
+    backdrop-filter:blur(16px);
+    position:sticky;
+    top:0;
+    z-index:20;
+}
+
+.brand{
+    display:flex;
+    align-items:center;
+    gap:13px;
+    text-decoration:none;
+    color:#fff;
+    font-size:25px;
+    font-weight:900;
+    letter-spacing:-1px;
+}
+
+.brand img{
+    width:52px;
+    height:52px;
+    object-fit:contain;
+    filter:drop-shadow(0 0 12px #7b00ff);
+}
+
+.brand span{
+    background:linear-gradient(90deg,#fff,#cda7ff,#8d28ff);
+    -webkit-background-clip:text;
+    color:transparent;
+}
+
+.home-btn,
+.download-btn,
+.discord-btn{
+    text-decoration:none;
+    color:white;
+    font-weight:700;
+    border:1px solid #8d24ff;
+    border-radius:10px;
+    background:linear-gradient(135deg,#5b00e8,#a42cff);
+    box-shadow:0 0 20px rgba(130,20,255,.45), inset 0 0 18px rgba(255,255,255,.08);
+    transition:.25s;
+}
+
+.home-btn{
+    padding:12px 24px;
+}
+
+.download-btn{
+    display:inline-flex;
+    align-items:center;
+    gap:10px;
+    padding:17px 30px;
+    font-size:17px;
+}
+
+.discord-btn{
+    display:inline-flex;
+    align-items:center;
+    gap:10px;
+    padding:17px 28px;
+    font-size:17px;
+}
+
+.home-btn:hover,
+.download-btn:hover,
+.discord-btn:hover{
+    transform:translateY(-3px);
+    box-shadow:0 0 32px rgba(154,48,255,.8);
+}
+
+header .download-btn{
+    padding:13px 25px;
+}
+
+/* Hero */
+.hero{
+    width:min(1240px,88%);
+    margin:70px auto 0;
+    display:grid;
+    grid-template-columns:1fr 1.05fr;
+    gap:55px;
+    align-items:center;
+}
+
+.tag{
+    display:inline-block;
+    padding:9px 17px;
+    border:1px solid #7920df;
+    border-radius:20px;
+    color:#dfbfff;
+    background:rgba(92,0,190,.13);
+    box-shadow:0 0 18px rgba(133,0,255,.25);
+    font-size:14px;
+    margin-bottom:22px;
+}
+
+.hero h1{
+    font-size:clamp(55px,7vw,92px);
+    line-height:.88;
+    font-weight:900;
+    letter-spacing:-5px;
+    text-transform:uppercase;
+}
+
+.hero h1 .white{
+    color:#fff;
+    text-shadow:0 0 30px rgba(255,255,255,.12);
+}
+
+.hero h1 .purple{
+    background:linear-gradient(100deg,#9a35ff,#6c00ff,#d39aff);
+    -webkit-background-clip:text;
+    color:transparent;
+    text-shadow:none;
+}
+
+.slogan{
+    margin:20px 0;
+    font-size:28px;
+    font-weight:800;
+    font-style:italic;
+}
+
+.slogan span{
+    color:#9e36ff;
+}
+
+.description{
+    color:#aaa5b8;
+    line-height:1.75;
+    max-width:610px;
+    font-size:15px;
+}
+
+.actions{
+    display:flex;
+    gap:15px;
+    flex-wrap:wrap;
+    margin-top:30px;
+}
+
+.platforms{
+    margin-top:17px;
+    color:#817c8c;
+    font-size:13px;
+}
+
+/* Launcher preview */
+.preview{
+    position:relative;
+    border:1px solid #6c20c9;
+    border-radius:18px;
+    padding:13px;
+    background:linear-gradient(145deg,rgba(42,4,75,.6),rgba(3,2,12,.9));
+    box-shadow:0 0 55px rgba(112,0,255,.28);
+}
+
+.preview::before{
+    content:"";
+    position:absolute;
+    inset:-2px;
+    border-radius:20px;
+    background:linear-gradient(120deg,transparent,#8d20ff,transparent,#6415ff,transparent);
+    opacity:.35;
+    filter:blur(7px);
+    z-index:-1;
+}
+
+.preview img{
+    width:100%;
+    display:block;
+    border-radius:11px;
+    border:1px solid rgba(173,84,255,.3);
+}
+
+/* Features */
+.features{
+    width:min(1240px,88%);
+    margin:85px auto 0;
+}
+
+.section-title{
+    text-align:center;
+    margin-bottom:35px;
+}
+
+.section-title small{
+    color:#9b29ff;
+    letter-spacing:5px;
+    font-weight:800;
+}
+
+.section-title h2{
+    margin-top:8px;
+    font-size:45px;
+    text-transform:uppercase;
+}
+
+.section-title h2 span{
+    color:#8f25ff;
+}
+
+.cards{
+    display:grid;
+    grid-template-columns:repeat(5,1fr);
+    gap:16px;
+}
+
+.card{
+    min-height:160px;
+    padding:25px 18px;
+    text-align:center;
+    border:1px solid rgba(126,35,224,.65);
+    border-radius:12px;
+    background:linear-gradient(145deg,rgba(17,7,29,.9),rgba(3,2,9,.96));
+    box-shadow:inset 0 0 25px rgba(112,0,255,.05);
+    transition:.25s;
+}
+
+.card:hover{
+    transform:translateY(-6px);
+    border-color:#a135ff;
+    box-shadow:0 0 28px rgba(137,25,255,.3);
+}
+
+.icon{
+    width:48px;
+    height:48px;
+    margin:0 auto 15px;
+    display:grid;
+    place-items:center;
+    border:1px solid #8d28ff;
+    border-radius:50%;
+    color:#c884ff;
+    font-size:23px;
+    box-shadow:0 0 18px rgba(138,0,255,.35);
+}
+
+.card h3{
+    font-size:15px;
+    margin-bottom:10px;
+}
+
+.card p{
+    color:#9993a5;
+    font-size:12px;
+    line-height:1.5;
+}
+
+/* Bottom CTA */
+.cta{
+    width:min(1240px,88%);
+    margin:28px auto 0;
+    padding:24px 35px;
+    border:1px solid #7121cc;
+    border-radius:15px;
+    background:linear-gradient(100deg,rgba(25,8,42,.95),rgba(6,3,13,.98));
+    box-shadow:0 0 30px rgba(104,0,255,.16);
+    display:flex;
+    align-items:center;
+    gap:25px;
+}
+
+.cta-logo{
+    width:75px;
+    height:75px;
+    object-fit:contain;
+    filter:drop-shadow(0 0 12px #8a22ff);
+}
+
+.cta-text{
+    flex:1;
+}
+
+.cta h2{
+    font-size:25px;
+    margin-bottom:6px;
+}
+
+.cta p{
+    color:#9993a5;
+    font-size:13px;
+}
+
+/* Footer */
+footer{
+    width:min(1240px,88%);
+    margin:60px auto 0;
+    padding:25px 0 35px;
+    border-top:1px solid rgba(120,30,220,.35);
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    color:#777180;
+    font-size:12px;
+}
+
+.footer-brand{
+    color:#b36cff;
+    font-weight:800;
+    font-size:17px;
+}
+
+.footer-links{
+    display:flex;
+    gap:20px;
+}
+
+.footer-links a{
+    color:#777180;
+    text-decoration:none;
+}
+
+.footer-links a:hover{
+    color:#c06fff;
+}
+
+/* Mobile */
+@media(max-width:900px){
+    header{
+        padding:0 5%;
+    }
+
+    header .download-btn{
+        display:none;
+    }
+
+    .hero{
+        grid-template-columns:1fr;
+        margin-top:45px;
+    }
+
+    .hero h1{
+        font-size:60px;
+    }
+
+    .cards{
+        grid-template-columns:repeat(2,1fr);
+    }
+
+    .cta{
+        flex-wrap:wrap;
+    }
+}
+
+@media(max-width:600px){
+    .brand{
+        font-size:19px;
+    }
+
+    .brand img{
+        width:42px;
+        height:42px;
+    }
+
+    .hero h1{
+        font-size:48px;
+        letter-spacing:-3px;
+    }
+
+    .slogan{
+        font-size:21px;
+    }
+
+    .hero{
+        width:90%;
+    }
+
+    .features,
+    .cta,
+    footer{
+        width:90%;
+    }
+
+    .cards{
+        grid-template-columns:1fr;
+    }
+
+    .section-title h2{
+        font-size:34px;
+    }
+
+    .cta{
+        padding:22px;
+    }
+
+    footer{
+        flex-direction:column;
+        gap:18px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <a href="#home" class="brand">
+        <img src="logo.png" alt="Mine Go Logo">
+        <span>MINE GO</span>
+    </a>
+
+    <a href="#home" class="home-btn">⌂ &nbsp; Home</a>
+
+    <a href="YOUR_DOWNLOAD_LINK_HERE" class="download-btn">
+        ⇩ &nbsp; Download Launcher
+    </a>
+</header>
+
+<main id="home">
+
+<section class="hero">
+
+    <div>
+        <div class="tag">🚀 &nbsp; The Ultimate Minecraft Launcher</div>
+
+        <h1>
+            <span class="white">MINE</span>
+            <span class="purple">GO</span>
+        </h1>
+
+        <div class="slogan">
+            Play. Explore. Create. <span>Together.</span>
+        </div>
+
+        <p class="description">
+            Mine Go is a Minecraft launcher designed for performance,
+            customization and a seamless gaming experience. Join a
+            growing community and take your Minecraft journey to the next level.
+        </p>
+
+        <div class="actions">
+            <a href="YOUR_DOWNLOAD_LINK_HERE" class="download-btn">
+                ⇩ &nbsp; Download Now
+            </a>
+
+            <a href="https://discord.gg/5M7DeyybAm" class="discord-btn">
+                ◉ &nbsp; Join Discord
+            </a>
+        </div>
+
+        <div class="platforms">▣ Windows &nbsp; • &nbsp; macOS &nbsp; • &nbsp; Linux</div>
+    </div>
+
+    <div class="preview">
+        <img src="launcher-preview.png" alt="Mine Go Launcher Preview">
+    </div>
+
+</section>
+
+
+<section class="features">
+
+    <div class="section-title">
+        <small>WHY CHOOSE</small>
+        <h2>MINE <span>GO?</span></h2>
+    </div>
+
+    <div class="cards">
+
+        <div class="card">
+            <div class="icon">ϟ</div>
+            <h3>One Click Play</h3>
+            <p>Launch your favorite modpacks and versions with just one click.</p>
+        </div>
+
+        <div class="card">
+            <div class="icon">◇</div>
+            <h3>Popular Modpacks</h3>
+            <p>Includes Spunky BoostX, Spirity BoostX and Better Optimized.</p>
+        </div>
+
+        <div class="card">
+            <div class="icon">◔</div>
+            <h3>Fast &amp; Smooth</h3>
+            <p>Optimized for high performance and a smooth, low-lag experience.</p>
+        </div>
+
+        <div class="card">
+            <div class="icon">♧</div>
+            <h3>Active Community</h3>
+            <p>Join a friendly community of Minecraft players.</p>
+        </div>
+
+        <div class="card">
+            <div class="icon">⬡</div>
+            <h3>Safe &amp; Secure</h3>
+            <p>Your account and data are kept protected.</p>
+        </div>
+
+    </div>
+
+</section>
+
+
+<section class="cta">
+
+    <img src="logo.png" alt="Mine Go" class="cta-logo">
+
+    <div class="cta-text">
+        <h2>Ready to Play?</h2>
+        <p>Download Mine Go and start your Minecraft adventure today!</p>
+    </div>
+
+    <a href="YOUR_DOWNLOAD_LINK_HERE" class="download-btn">
+        ⇩ &nbsp; Download Now
+    </a>
+
+    <a href="YOUR_DISCORD_LINK_HERE" class="discord-btn">
+        ◉ &nbsp; Join Discord
+    </a>
+
+</section>
+
+</main>
+
+
+<footer>
+    <div class="footer-brand">◉ MINE GO</div>
+
+    <div class="footer-links">
+        <a href="#home">PLAY</a>
+        <a href="#home">CONNECT</a>
+        <a href="#home">EXPLORE</a>
+    </div>
+
+    <div>© 2026 Mine Go. All rights reserved.</div>
+</footer>
+
+</body>
+</html>
